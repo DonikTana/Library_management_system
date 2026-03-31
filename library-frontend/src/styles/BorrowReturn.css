@@ -1,0 +1,156 @@
+.borrow-return-page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(180deg, #f4f7fb 0%, #e4ecf7 100%);
+}
+
+.borrow-return-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0 auto 2rem;
+  max-width: 1100px;
+}
+
+.borrow-return-header h1 {
+  margin: 0;
+  color: #22324c;
+}
+
+.borrow-return-header p {
+  margin: 0.4rem 0 0;
+  color: #607089;
+}
+
+.borrow-return-back-btn {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: #395b9a;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.borrow-return-tabs {
+  display: flex;
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto 1.5rem;
+}
+
+.borrow-return-tab {
+  padding: 0.9rem 1.2rem;
+  border: 1px solid #c7d3e4;
+  border-radius: 999px;
+  background: white;
+  color: #385070;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.borrow-return-tab.active {
+  background: #22324c;
+  border-color: #22324c;
+  color: white;
+}
+
+.borrow-return-panel {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.borrow-return-panel h2 {
+  color: #22324c;
+  margin-bottom: 1rem;
+}
+
+.borrow-return-message {
+  max-width: 1100px;
+  margin: 0 auto;
+  color: #5e6f87;
+}
+
+.borrow-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.borrow-card,
+.return-card {
+  background: white;
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: 0 12px 30px rgba(38, 62, 105, 0.08);
+}
+
+.borrow-card-image {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0.9rem;
+}
+
+.borrow-card h3,
+.return-card h3 {
+  margin: 0 0 0.7rem;
+  color: #22324c;
+}
+
+.borrow-card p,
+.return-card p {
+  margin: 0.4rem 0;
+  color: #56677f;
+}
+
+.borrow-action-btn {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2f7d4d 0%, #49a36b 100%);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.return-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.return-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.return-btn {
+  width: auto;
+  min-width: 160px;
+  background: linear-gradient(135deg, #a85634 0%, #d97542 100%);
+}
+
+@media (max-width: 720px) {
+  .borrow-return-page {
+    padding: 1.25rem;
+  }
+
+  .borrow-return-tabs {
+    flex-direction: column;
+  }
+
+  .return-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .return-btn {
+    width: 100%;
+  }
+}
