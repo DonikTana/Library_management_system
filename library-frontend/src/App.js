@@ -25,6 +25,7 @@ function App() {
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/books" element={<PrivateRoute><BookList /></PrivateRoute>} />
           <Route path="/add-book" element={<PrivateRoute><AddBook /></PrivateRoute>} />
+          <Route path="/edit-book/:bookId" element={<PrivateRoute><AddBook /></PrivateRoute>} />
           <Route path="/borrow" element={<PrivateRoute><BorrowReturn /></PrivateRoute>} />
           <Route path="/seats" element={<PrivateRoute><SeatLayout /></PrivateRoute>} />
           <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />

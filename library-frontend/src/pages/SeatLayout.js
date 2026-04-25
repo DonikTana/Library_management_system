@@ -82,7 +82,7 @@ const SeatLayout = () => {
         const response = await fetch('/library-api/releaseSeat.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ enrollmentId: userId, seatId, role })
+          body: JSON.stringify({ enrollmentId: userId, seatId })
         });
         const data = await response.json();
         if (data.error) {
@@ -157,8 +157,8 @@ const SeatLayout = () => {
         <header className="seat-header">
           <button onClick={() => navigate('/dashboard')} className="back-btn">Back to Dashboard</button>
           <div className="seat-header-copy">
-            <p className="seat-eyebrow">Study Hall Reservation</p>
-            <h1>Choose From 30 Ordered Seats</h1>
+            <h1 className="seat-eyebrow">Study Hall Reservation</h1>
+            <h2>Choose From 30 Ordered Seats</h2>
             <p>Green seats are free, red seats are reserved, and blue marks your own booking.</p>
           </div>
           {role === 'admin' && (
@@ -216,7 +216,7 @@ const SeatLayout = () => {
         </section>
 
         <div className="legend">
-          <h3>Legend</h3>
+          <h3>Seat Status</h3>
           <div className="legend-items">
             <div className="legend-item">
               <div className="legend-swatch seat-available"></div>

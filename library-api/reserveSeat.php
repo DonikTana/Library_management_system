@@ -11,16 +11,7 @@ if (!$enrollmentId || !$seatId) {
     sendError('Enrollment ID and seat ID are required.');
 }
 
-$checkUser = 'SELECT enrollment_id FROM users WHERE enrollment_id = ? LIMIT 1';
-$stmt = $mysqli->prepare($checkUser);
-$stmt->bind_param('s', $enrollmentId);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-$stmt->close();
-if (!$user) {
-    sendError('User not found.');
-}
+requireUserByEnrollmentId($mysqli, $enrollmentId);
 
 $checkSeat = 'SELECT status FROM study_hall_seats WHERE seat_id = ? LIMIT 1';
 $stmt = $mysqli->prepare($checkSeat);

@@ -9,21 +9,12 @@ if (!$enrollmentId || !$password) {
     sendError('Enrollment ID and password are required.');
 }
 
-$query = 'SELECT enrollment_id, name, email, role, password FROM users WHERE enrollment_id = ? LIMIT 1';
-$stmt = $mysqli->prepare($query);
-$stmt->bind_param('s', $enrollmentId);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-$stmt->close();
+$user = requireUserByEnrollmentId($mysqli, $enrollmentId, true);
 
-if (!$user || $user['password'] !== $password) {
+if (!verifyPasswordAndUpgradeIfNeeded($mysqli, $user, $password)) {
     sendError('Invalid enrollment ID or password.');
 }
 
 unset($user['password']);
-$user['role'] = strtolower(trim((string) $user['role']));
-if ($user['role'] === 'student') {
-    $user['role'] = 'user';
-}
+$user['role'] = normalizeUserRole((string) $user['role']);
 sendSuccess(['user' => $user]);

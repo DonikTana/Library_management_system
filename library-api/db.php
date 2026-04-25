@@ -62,6 +62,81 @@ function sanitizeString($value)
     return trim(filter_var($value, FILTER_SANITIZE_STRING));
 }
 
+function normalizeUserRole(string $role): string
+{
+    $role = strtolower(trim($role));
+    return $role === 'student' ? 'user' : $role;
+}
+
+function getUserByEnrollmentId(mysqli $mysqli, string $enrollmentId, bool $includePassword = false): ?array
+{
+    $fields = $includePassword
+        ? 'enrollment_id, name, email, role, password'
+        : 'enrollment_id, name, email, role';
+    $query = "SELECT {$fields} FROM users WHERE enrollment_id = ? LIMIT 1";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        sendError('Failed to prepare user lookup.');
+    }
+
+    $stmt->bind_param('s', $enrollmentId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc() ?: null;
+    $stmt->close();
+
+    return $user;
+}
+
+function requireUserByEnrollmentId(mysqli $mysqli, ?string $enrollmentId, bool $includePassword = false): array
+{
+    if (!$enrollmentId) {
+        sendError('Enrollment ID is required.');
+    }
+
+    $user = getUserByEnrollmentId($mysqli, $enrollmentId, $includePassword);
+    if (!$user) {
+        sendError('User not found.', 404);
+    }
+
+    return $user;
+}
+
+function verifyPasswordAndUpgradeIfNeeded(mysqli $mysqli, array $user, string $plainPassword): bool
+{
+    $storedPassword = (string) ($user['password'] ?? '');
+    if ($storedPassword === '') {
+        return false;
+    }
+
+    if (password_verify($plainPassword, $storedPassword)) {
+        if (password_needs_rehash($storedPassword, PASSWORD_DEFAULT)) {
+            $newHash = password_hash($plainPassword, PASSWORD_DEFAULT);
+            $stmt = $mysqli->prepare('UPDATE users SET password = ? WHERE enrollment_id = ?');
+            if ($stmt) {
+                $stmt->bind_param('ss', $newHash, $user['enrollment_id']);
+                $stmt->execute();
+                $stmt->close();
+            }
+        }
+        return true;
+    }
+
+    // Support legacy plain-text passwords and migrate them on successful login.
+    if (hash_equals($storedPassword, $plainPassword)) {
+        $newHash = password_hash($plainPassword, PASSWORD_DEFAULT);
+        $stmt = $mysqli->prepare('UPDATE users SET password = ? WHERE enrollment_id = ?');
+        if ($stmt) {
+            $stmt->bind_param('ss', $newHash, $user['enrollment_id']);
+            $stmt->execute();
+            $stmt->close();
+        }
+        return true;
+    }
+
+    return false;
+}
+
 function ensureSeatCount(mysqli $mysqli, int $targetCount = 30)
 {
     $countResult = $mysqli->query('SELECT COUNT(*) AS total FROM study_hall_seats');

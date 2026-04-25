@@ -10,15 +10,9 @@ if (!$enrollmentId) {
     sendError('Enrollment ID is required.');
 }
 
-$checkUser = 'SELECT role FROM users WHERE enrollment_id = ? LIMIT 1';
-$stmt = $mysqli->prepare($checkUser);
-$stmt->bind_param('s', $enrollmentId);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-$stmt->close();
+$user = requireUserByEnrollmentId($mysqli, $enrollmentId);
 
-if (!$user || $user['role'] !== 'admin') {
+if (normalizeUserRole((string) $user['role']) !== 'admin') {
     sendError('Only admin users can reset seats.', 403);
 }
 

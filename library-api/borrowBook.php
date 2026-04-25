@@ -9,16 +9,7 @@ if (!$enrollmentId || !$bookId) {
     sendError('Enrollment ID and book ID are required.');
 }
 
-$checkUser = 'SELECT enrollment_id FROM users WHERE enrollment_id = ? LIMIT 1';
-$stmt = $mysqli->prepare($checkUser);
-$stmt->bind_param('s', $enrollmentId);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-$stmt->close();
-if (!$user) {
-    sendError('User not found.');
-}
+requireUserByEnrollmentId($mysqli, $enrollmentId);
 
 $checkBook = 'SELECT available FROM books WHERE book_id = ? LIMIT 1';
 $stmt = $mysqli->prepare($checkBook);

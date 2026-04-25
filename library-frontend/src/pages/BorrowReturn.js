@@ -15,9 +15,10 @@ const BorrowReturn = () => {
     setLoading(true);
 
     try {
+      const includeHistory = role === 'admin' ? '1' : '0';
       const [booksResponse, borrowedResponse] = await Promise.all([
         fetch('/library-api/getBooks.php'),
-        fetch(`/library-api/getBorrowedBooks.php?enrollmentId=${encodeURIComponent(userId)}&role=${encodeURIComponent(role)}`)
+        fetch(`/library-api/getBorrowedBooks.php?enrollmentId=${encodeURIComponent(userId)}&includeHistory=${includeHistory}`)
       ]);
 
       const booksData = await booksResponse.json();
@@ -79,7 +80,11 @@ const BorrowReturn = () => {
       const response = await fetch('/library-api/returnBook.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ enrollmentId: borrowerId, bookId })
+        body: JSON.stringify({
+          actorEnrollmentId: userId,
+          borrowerEnrollmentId: borrowerId,
+          bookId
+        })
       });
 
       const data = await response.json();
@@ -96,6 +101,7 @@ const BorrowReturn = () => {
   };
 
   const availableBooks = books.filter((book) => book.available === '1' || book.available === 1);
+  const activeBorrowedBooks = borrowedBooks.filter((entry) => entry.status === 'borrowed');
 
   return (
     <div className="borrow-return-page">
@@ -148,28 +154,40 @@ const BorrowReturn = () => {
         </section>
       ) : (
         <section className="borrow-return-panel">
-          <h2>{role === 'admin' ? 'Active Borrowed Books' : 'Your Borrowed Books'}</h2>
+          <h2>{role === 'admin' ? 'Student Borrow Records' : 'Your Borrowed Books'}</h2>
           {borrowedBooks.length === 0 ? (
-            <p className="borrow-return-message">There are no active borrowed books to return.</p>
+            <p className="borrow-return-message">{role === 'admin' ? 'No borrow records are available yet.' : 'There are no active borrowed books to return.'}</p>
           ) : (
             <div className="return-list">
               {borrowedBooks.map((entry) => (
                 <article key={entry.id} className="return-card">
-                  <div>
+                  <div className="return-card-content">
                     <h3>{entry.title}</h3>
                     <p>Author: {entry.author}</p>
-                    <p>Borrowed By: {entry.enrollment_id}</p>
+                    {role === 'admin' && <p>Student Name: {entry.student_name}</p>}
+                    <p>Enrollment ID: {entry.enrollment_id}</p>
                     <p>Borrow Date: {new Date(entry.borrow_date).toLocaleString()}</p>
+                    <p>Return Date: {entry.return_date ? new Date(entry.return_date).toLocaleString() : 'Not returned yet'}</p>
+                    <div className="return-card-footer">
+                      <span className={entry.status === 'returned' ? 'status-badge returned' : 'status-badge borrowed'}>
+                        {entry.status === 'returned' ? 'Returned' : 'Borrowed'}
+                      </span>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => handleReturn(entry.book_id, entry.enrollment_id)}
-                    className="borrow-action-btn return-btn"
-                  >
-                    Return Book
-                  </button>
+                  {entry.status === 'borrowed' && (
+                    <button
+                      onClick={() => handleReturn(entry.book_id, entry.enrollment_id)}
+                      className="borrow-action-btn return-btn"
+                    >
+                      Return Book
+                    </button>
+                  )}
                 </article>
               ))}
             </div>
+          )}
+          {role === 'admin' && activeBorrowedBooks.length > 0 && (
+            <p className="borrow-return-message admin-record-note">Admins can review all student borrow records here and return any book that is still marked as borrowed.</p>
           )}
         </section>
       )}

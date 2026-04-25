@@ -2,24 +2,38 @@
 require_once 'db.php';
 
 $enrollmentId = getValue($_GET, ['enrollment_id', 'enrollmentId']);
-$role = strtolower((string) getValue($_GET, ['role'], 'user'));
+$includeHistory = getValue($_GET, ['include_history', 'includeHistory'], '0');
+$includeHistory = in_array(strtolower((string) $includeHistory), ['1', 'true', 'yes'], true);
 
-if (!$enrollmentId) {
-    sendError('Enrollment ID is required.');
-}
+$requestingUser = requireUserByEnrollmentId($mysqli, $enrollmentId);
+$role = normalizeUserRole((string) $requestingUser['role']);
 
 $query = '
-    SELECT b.id, b.enrollment_id, b.book_id, b.borrow_date, books.title, books.author
+    SELECT
+        b.id,
+        b.enrollment_id,
+        users.name AS student_name,
+        b.book_id,
+        books.title,
+        books.author,
+        b.borrow_date,
+        b.return_date,
+        b.status
     FROM borrow b
+    INNER JOIN users ON users.enrollment_id = b.enrollment_id
     INNER JOIN books ON books.book_id = b.book_id
-    WHERE b.status = "borrowed"
+    WHERE 1 = 1
 ';
+
+if (!$includeHistory) {
+    $query .= ' AND b.status = "borrowed"';
+}
 
 if ($role !== 'admin') {
     $query .= ' AND b.enrollment_id = ?';
 }
 
-$query .= ' ORDER BY b.borrow_date DESC';
+$query .= ' ORDER BY b.borrow_date DESC, b.id DESC';
 
 $stmt = $mysqli->prepare($query);
 if ($role === 'admin') {

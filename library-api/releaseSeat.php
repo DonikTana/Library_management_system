@@ -6,11 +6,13 @@ ensureSeatCount($mysqli, 30);
 $data = getRequestData();
 $enrollmentId = getValue($data, ['enrollment_id', 'enrollmentId']);
 $seatId = getValue($data, ['seat_id', 'seatId']);
-$role = getValue($data, ['role']);
 
 if (!$seatId || !$enrollmentId) {
     sendError('Enrollment ID and seat ID are required.');
 }
+
+$actor = requireUserByEnrollmentId($mysqli, $enrollmentId);
+$actorRole = normalizeUserRole((string) $actor['role']);
 
 $checkSeat = 'SELECT status, enrollment_id FROM study_hall_seats WHERE seat_id = ? LIMIT 1';
 $stmt = $mysqli->prepare($checkSeat);
@@ -26,7 +28,7 @@ if (!$seat) {
 if ($seat['status'] !== 'reserved') {
     sendError('This seat is not reserved.');
 }
-if ($seat['enrollment_id'] !== $enrollmentId && $role !== 'admin') {
+if ($seat['enrollment_id'] !== $enrollmentId && $actorRole !== 'admin') {
     sendError('You can only release your own reserved seat.');
 }
 
