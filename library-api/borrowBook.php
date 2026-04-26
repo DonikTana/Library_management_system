@@ -11,7 +11,7 @@ if (!$enrollmentId || !$bookId) {
 
 requireUserByEnrollmentId($mysqli, $enrollmentId);
 
-$checkBook = 'SELECT available FROM books WHERE book_id = ? LIMIT 1';
+$checkBook = 'SELECT available_quantity FROM books WHERE book_id = ? LIMIT 1';
 $stmt = $mysqli->prepare($checkBook);
 $stmt->bind_param('i', $bookId);
 $stmt->execute();
@@ -22,8 +22,8 @@ $stmt->close();
 if (!$book) {
     sendError('Book not found.');
 }
-if ($book['available'] != 1) {
-    sendError('This book is not available for borrowing.');
+if ((int) $book['available_quantity'] <= 0) {
+    sendError('This book is out of stock.');
 }
 
 $checkBorrow = 'SELECT id FROM borrow WHERE enrollment_id = ? AND book_id = ? AND status = "borrowed" LIMIT 1';
@@ -44,13 +44,14 @@ $stmt->bind_param('si', $enrollmentId, $bookId);
 $inserted = $stmt->execute();
 $stmt->close();
 
-$updateBook = 'UPDATE books SET available = 0 WHERE book_id = ?';
+$updateBook = 'UPDATE books SET available = IF(available_quantity > 1, 1, 0), available_quantity = available_quantity - 1 WHERE book_id = ? AND available_quantity > 0';
 $stmt = $mysqli->prepare($updateBook);
 $stmt->bind_param('i', $bookId);
 $updated = $stmt->execute();
+$affectedRows = $stmt->affected_rows;
 $stmt->close();
 
-if ($inserted && $updated) {
+if ($inserted && $updated && $affectedRows === 1) {
     $mysqli->commit();
     sendSuccess();
 }

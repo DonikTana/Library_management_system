@@ -127,9 +127,10 @@ const BookList = () => {
               <span className="genre-pill">{book.genre}</span>
               <h3>{book.title}</h3>
               <p>Author: {book.author}</p>
+              {book.publisher && <p>Publisher: {book.publisher}</p>}
               <p>ISBN: {book.isbn}</p>
               <p>Published: {book.year}</p>
-              <p>Available: {book.available ? 'Yes' : 'No'}</p>
+              <p>{Number(book.available_quantity) > 0 ? `Available: ${book.available_quantity} copies` : 'Out of Stock'}</p>
               {userRole === 'admin' && (
                 <div className="book-card-actions">
                   <button onClick={() => navigate(`/edit-book/${book.book_id}`)} className="book-action-btn edit-book-btn">

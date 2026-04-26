@@ -100,7 +100,6 @@ const BorrowReturn = () => {
     }
   };
 
-  const availableBooks = books.filter((book) => book.available === '1' || book.available === 1);
   const activeBorrowedBooks = borrowedBooks.filter((entry) => entry.status === 'borrowed');
 
   return (
@@ -133,22 +132,33 @@ const BorrowReturn = () => {
       ) : activeTab === 'borrow' ? (
         <section className="borrow-return-panel">
           <h2>Available Books</h2>
-          {availableBooks.length === 0 ? (
-            <p className="borrow-return-message">No books are available to borrow right now.</p>
+          {books.length === 0 ? (
+            <p className="borrow-return-message">No books are available right now.</p>
           ) : (
             <div className="borrow-cards">
-              {availableBooks.map((book) => (
-                <article key={book.book_id} className="borrow-card">
-                  {book.cover_url && <img src={book.cover_url} alt={book.title} className="borrow-card-image" />}
-                  <h3>{book.title}</h3>
-                  <p>Author: {book.author}</p>
-                  <p>ISBN: {book.isbn}</p>
-                  <p>Published: {book.year}</p>
-                  <button onClick={() => handleBorrow(book.book_id)} className="borrow-action-btn">
-                    Borrow This Book
-                  </button>
-                </article>
-              ))}
+              {books.map((book) => {
+                const availableCopies = Number(book.available_quantity || 0);
+                return (
+                  <article key={book.book_id} className="borrow-card">
+                    {book.cover_url && <img src={book.cover_url} alt={book.title} className="borrow-card-image" />}
+                    <h3>{book.title}</h3>
+                    <p>Author: {book.author}</p>
+                    {book.publisher && <p>Publisher: {book.publisher}</p>}
+                    <p>ISBN: {book.isbn}</p>
+                    <p>Published: {book.year}</p>
+                    <p className={availableCopies > 0 ? 'stock-message' : 'stock-message out'}>
+                      {availableCopies > 0 ? `Available: ${availableCopies} copies` : 'Out of Stock'}
+                    </p>
+                    <button
+                      onClick={() => handleBorrow(book.book_id)}
+                      className="borrow-action-btn"
+                      disabled={availableCopies <= 0}
+                    >
+                      Borrow This Book
+                    </button>
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>

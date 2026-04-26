@@ -36,7 +36,7 @@ $stmt->bind_param('i', $borrow['id']);
 $updatedBorrow = $stmt->execute();
 $stmt->close();
 
-$updateBook = 'UPDATE books SET available = 1 WHERE book_id = ?';
+$updateBook = 'UPDATE books SET available = 1, available_quantity = LEAST(total_quantity, available_quantity + 1) WHERE book_id = ?';
 $stmt = $mysqli->prepare($updateBook);
 $stmt->bind_param('i', $bookId);
 $updatedBook = $stmt->execute();

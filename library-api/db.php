@@ -1,4 +1,12 @@
 <?php
+// Load environment variables from .env file
+if (file_exists(__DIR__ . '/.env')) {
+    $envVars = parse_ini_file(__DIR__ . '/.env');
+    foreach ($envVars as $key => $value) {
+        putenv($key . '=' . $value);
+    }
+}
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
