@@ -172,6 +172,81 @@
   background: linear-gradient(135deg, #2f7d4d 0%, #54b277 100%);
 }
 
+.status-badge.pending {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.status-badge.rejected {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+}
+
+.return-status-section {
+  margin: 1rem 0 0.5rem;
+}
+
+.fine-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+}
+
+.fine-section p {
+  margin: 0.3rem 0;
+  color: #92400e;
+}
+
+.payment-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.payment-badge.paid {
+  background: linear-gradient(135deg, #2f7d4d 0%, #54b277 100%);
+}
+
+.payment-badge.unpaid {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+}
+
+.return-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.approve-btn {
+  background: linear-gradient(135deg, #2f7d4d 0%, #49a36b 100%);
+  width: auto;
+  min-width: 150px;
+}
+
+.reject-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  width: auto;
+  min-width: 150px;
+}
+
+.pay-fine-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: #78350f;
+  width: auto;
+  min-width: 180px;
+}
+
+.text-danger {
+  color: #dc2626;
+  font-weight: 700;
+}
+
 .return-btn {
   width: auto;
   min-width: 160px;

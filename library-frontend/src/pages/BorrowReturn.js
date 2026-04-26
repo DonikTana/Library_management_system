@@ -67,8 +67,8 @@ const BorrowReturn = () => {
         return;
       }
 
+      alert('Book borrowed successfully! Check the Return Books tab to request return.');
       await fetchData();
-      setActiveTab('return');
     } catch (error) {
       alert('Failed to borrow book.');
       console.error(error);
@@ -93,14 +93,83 @@ const BorrowReturn = () => {
         return;
       }
 
+      alert('Return request submitted. Awaiting admin approval.');
       await fetchData();
     } catch (error) {
-      alert('Failed to return book.');
+      alert('Failed to request return.');
       console.error(error);
     }
   };
 
-  const activeBorrowedBooks = borrowedBooks.filter((entry) => entry.status === 'borrowed');
+  const handleApproveReturn = async (borrowId) => {
+    try {
+      const response = await fetch('/library-api/approveReturn.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enrollmentId: userId, borrowId })
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      alert(`Return approved. Fine: ₹${data.fine}`);
+      await fetchData();
+    } catch (error) {
+      alert('Failed to approve return.');
+      console.error(error);
+    }
+  };
+
+  const handleRejectReturn = async (borrowId) => {
+    try {
+      const response = await fetch('/library-api/rejectReturn.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enrollmentId: userId, borrowId })
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      alert(data.message || 'Return request rejected. The book can be requested again.');
+      await fetchData();
+    } catch (error) {
+      alert('Failed to reject return.');
+      console.error(error);
+    }
+  };
+
+  const handlePayFine = async (borrowId) => {
+    try {
+      const response = await fetch('/library-api/payFine.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enrollmentId: userId, borrowId })
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      alert(`Fine paid: ₹${data.amount}`);
+      await fetchData();
+    } catch (error) {
+      alert('Failed to process payment.');
+      console.error(error);
+    }
+  };
+
+  const activeBorrowedBooks = role === 'admin'
+    ? borrowedBooks
+    : borrowedBooks.filter((entry) => entry.status === 'BORROWED' || entry.status === 'PENDING');
 
   return (
     <div className="borrow-return-page">
@@ -165,39 +234,90 @@ const BorrowReturn = () => {
       ) : (
         <section className="borrow-return-panel">
           <h2>{role === 'admin' ? 'Student Borrow Records' : 'Your Borrowed Books'}</h2>
-          {borrowedBooks.length === 0 ? (
+          {activeBorrowedBooks.length === 0 ? (
             <p className="borrow-return-message">{role === 'admin' ? 'No borrow records are available yet.' : 'There are no active borrowed books to return.'}</p>
           ) : (
             <div className="return-list">
-              {borrowedBooks.map((entry) => (
-                <article key={entry.id} className="return-card">
-                  <div className="return-card-content">
-                    <h3>{entry.title}</h3>
-                    <p>Author: {entry.author}</p>
-                    {role === 'admin' && <p>Student Name: {entry.student_name}</p>}
-                    <p>Enrollment ID: {entry.enrollment_id}</p>
-                    <p>Borrow Date: {new Date(entry.borrow_date).toLocaleString()}</p>
-                    <p>Return Date: {entry.return_date ? new Date(entry.return_date).toLocaleString() : 'Not returned yet'}</p>
-                    <div className="return-card-footer">
-                      <span className={entry.status === 'returned' ? 'status-badge returned' : 'status-badge borrowed'}>
-                        {entry.status === 'returned' ? 'Returned' : 'Borrowed'}
-                      </span>
+              {activeBorrowedBooks.map((entry) => {
+                const today = new Date().toISOString().split('T')[0];
+                const isOverdue = entry.due_date && entry.due_date < today && entry.status === 'BORROWED';
+                const hasUnpaidFine = entry.fine > 0 && entry.payment_status === 'UNPAID';
+                const statusDisplay = {
+                  'BORROWED': 'Borrowed',
+                  'PENDING': 'Approval Pending',
+                  'RETURNED': 'Returned',
+                  'REJECTED': 'Rejected'
+                };
+                
+                return (
+                  <article key={entry.id} className="return-card">
+                    <div className="return-card-content">
+                      <h3>{entry.title}</h3>
+                      <p>Author: {entry.author}</p>
+                      {role === 'admin' && <p>Student Name: {entry.student_name}</p>}
+                      <p>Enrollment ID: {entry.enrollment_id}</p>
+                      <p>Borrow Date: {new Date(entry.borrowed_at || entry.borrow_date).toLocaleDateString()}</p>
+                      {entry.due_date && <p>Due Date: <span className={isOverdue ? 'text-danger' : ''}>{new Date(entry.due_date).toLocaleDateString()} {isOverdue ? '(OVERDUE)' : ''}</span></p>}
+                      {entry.return_requested_at && <p>Return Requested: {new Date(entry.return_requested_at).toLocaleDateString()}</p>}
+                      {entry.returned_at && <p>Returned: {new Date(entry.returned_at).toLocaleDateString()}</p>}
+                      
+                      <div className="return-status-section">
+                        <span className={`status-badge ${entry.status.toLowerCase()}`}>
+                          {statusDisplay[entry.status] || entry.status}
+                        </span>
+                      </div>
+
+                      {entry.fine > 0 && (
+                        <div className="fine-section">
+                          <p>Fine: <strong>₹{entry.fine}</strong></p>
+                          <p>Payment Status: <span className={`payment-badge ${entry.payment_status.toLowerCase()}`}>{entry.payment_status}</span></p>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                  {entry.status === 'borrowed' && (
-                    <button
-                      onClick={() => handleReturn(entry.book_id, entry.enrollment_id)}
-                      className="borrow-action-btn return-btn"
-                    >
-                      Return Book
-                    </button>
-                  )}
-                </article>
-              ))}
+
+                    <div className="return-card-actions">
+                      {entry.status === 'BORROWED' && (
+                        <button
+                          onClick={() => handleReturn(entry.book_id, entry.enrollment_id)}
+                          className="borrow-action-btn return-btn"
+                        >
+                          Request Return
+                        </button>
+                      )}
+
+                      {role === 'admin' && entry.status === 'PENDING' && (
+                        <>
+                          <button
+                            onClick={() => handleApproveReturn(entry.id)}
+                            className="borrow-action-btn approve-btn"
+                          >
+                            Approve Return
+                          </button>
+                          <button
+                            onClick={() => handleRejectReturn(entry.id)}
+                            className="borrow-action-btn reject-btn"
+                          >
+                            Reject Return
+                          </button>
+                        </>
+                      )}
+
+                      {hasUnpaidFine && (
+                        <button
+                          onClick={() => handlePayFine(entry.id)}
+                          className="borrow-action-btn pay-fine-btn"
+                        >
+                          Pay Fine (₹{entry.fine})
+                        </button>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
-          {role === 'admin' && activeBorrowedBooks.length > 0 && (
-            <p className="borrow-return-message admin-record-note">Admins can review all student borrow records here and return any book that is still marked as borrowed.</p>
+          {role === 'admin' && borrowedBooks.some(b => b.status === 'PENDING') && (
+            <p className="borrow-return-message admin-record-note">Pending returns require admin approval before books are marked as returned.</p>
           )}
         </section>
       )}

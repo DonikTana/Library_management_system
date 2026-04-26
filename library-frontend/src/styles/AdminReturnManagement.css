@@ -1,0 +1,424 @@
+.admin-return-page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(180deg, #f4f7fb 0%, #e4ecf7 100%);
+}
+
+.admin-return-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0 auto 2rem;
+  max-width: 1200px;
+}
+
+.admin-return-header h1 {
+  margin: 0;
+  color: #22324c;
+  font-size: 2rem;
+}
+
+.admin-return-header p {
+  margin: 0.4rem 0 0;
+  color: #607089;
+}
+
+.admin-return-back-btn {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: #395b9a;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.admin-return-back-btn:hover {
+  background: #2d4577;
+}
+
+.admin-return-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(38, 62, 105, 0.1);
+  border-left: 4px solid #395b9a;
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #22324c;
+}
+
+.stat-card p {
+  margin: 0.5rem 0 0;
+  color: #607089;
+  font-size: 0.95rem;
+}
+
+.admin-return-tabs {
+  display: flex;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto 1.5rem;
+}
+
+.admin-return-tab {
+  padding: 0.9rem 1.2rem;
+  border: 1px solid #c7d3e4;
+  border-radius: 999px;
+  background: white;
+  color: #385070;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.admin-return-tab:hover {
+  background: #f0f3fa;
+}
+
+.admin-return-tab.active {
+  background: #22324c;
+  border-color: #22324c;
+  color: white;
+}
+
+.admin-return-panel {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-return-panel h2 {
+  color: #22324c;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.admin-return-message {
+  text-align: center;
+  color: #607089;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+}
+
+/* RECORD CARDS */
+.return-records {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.record-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(38, 62, 105, 0.08);
+  border-left: 4px solid #f59e0b;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.record-header h3 {
+  margin: 0;
+  color: #22324c;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-badge.overdue {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.ontime {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.record-body {
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.record-body p {
+  margin: 0.5rem 0;
+  color: #56677f;
+  font-size: 0.95rem;
+}
+
+.record-body strong {
+  color: #22324c;
+}
+
+.record-actions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.btn {
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  flex: 1;
+}
+
+.btn-approve {
+  background: linear-gradient(135deg, #2f7d4d 0%, #49a36b 100%);
+  color: white;
+}
+
+.btn-approve:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(47, 125, 77, 0.3);
+}
+
+.btn-reject {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  color: white;
+}
+
+.btn-reject:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.btn-pay {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: #78350f;
+}
+
+.btn-pay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-small {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+  flex: none;
+}
+
+/* FINES TABLE */
+.fines-table {
+  overflow-x: auto;
+}
+
+.fines-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(38, 62, 105, 0.08);
+}
+
+.fines-table thead {
+  background: #22324c;
+  color: white;
+}
+
+.fines-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #1a2438;
+}
+
+.fines-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #56677f;
+}
+
+.fines-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.fine-amount {
+  font-weight: 700;
+  color: #dc2626;
+  font-size: 1.1rem;
+}
+
+.payment-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.payment-badge.unpaid {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.payment-badge.paid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* ALL RECORDS */
+.all-records {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.record-card-mini {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(38, 62, 105, 0.08);
+  border-top: 4px solid;
+}
+
+.record-card-mini.borrowed {
+  border-top-color: #dc2626;
+}
+
+.record-card-mini.pending {
+  border-top-color: #f59e0b;
+}
+
+.record-card-mini.returned {
+  border-top-color: #2f7d4d;
+}
+
+.mini-record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.mini-record-header h4 {
+  margin: 0;
+  color: #22324c;
+  font-size: 1rem;
+}
+
+.mini-status {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mini-status.borrowed {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.mini-status.pending {
+  background: #fcd34d;
+  color: #78350f;
+}
+
+.mini-status.returned {
+  background: #bbf7d0;
+  color: #166534;
+}
+
+.mini-student {
+  margin: 0.4rem 0;
+  color: #56677f;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.mini-dates {
+  margin: 0.3rem 0;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.mini-fine {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem;
+  background: #fef3c7;
+  border-radius: 6px;
+  color: #92400e;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .admin-return-page {
+    padding: 1rem;
+  }
+
+  .admin-return-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .admin-return-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-return-tabs {
+    flex-direction: column;
+  }
+
+  .admin-return-tab {
+    width: 100%;
+  }
+
+  .record-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .record-actions {
+    flex-direction: column;
+  }
+
+  .fines-table {
+    font-size: 0.85rem;
+  }
+
+  .fines-table th,
+  .fines-table td {
+    padding: 0.75rem;
+  }
+
+  .all-records {
+    grid-template-columns: 1fr;
+  }
+}

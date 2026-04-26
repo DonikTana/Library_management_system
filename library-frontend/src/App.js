@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import SeatLayout from './pages/SeatLayout';
 import Analytics from './pages/Analytics';
 import BorrowReturn from './pages/BorrowReturn';
+import AdminReturnManagement from './pages/AdminReturnManagement';
 import BookList from './components/BookList';
 import AddBook from './components/AddBook';
 import './App.css';
@@ -27,6 +28,7 @@ function App() {
           <Route path="/add-book" element={<PrivateRoute><AddBook /></PrivateRoute>} />
           <Route path="/edit-book/:bookId" element={<PrivateRoute><AddBook /></PrivateRoute>} />
           <Route path="/borrow" element={<PrivateRoute><BorrowReturn /></PrivateRoute>} />
+          <Route path="/return-management" element={<PrivateRoute><AdminReturnManagement /></PrivateRoute>} />
           <Route path="/seats" element={<PrivateRoute><SeatLayout /></PrivateRoute>} />
           <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
         </Routes>

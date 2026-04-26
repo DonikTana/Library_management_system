@@ -29,13 +29,6 @@ const Dashboard = () => {
               <h3>View Books</h3>
               <p>Browse and search our book collection</p>
             </div>
-            {userRole === 'admin' && (
-              <div className="dashboard-card" onClick={() => navigate('/add-book')}>
-                <div className="card-icon">➕</div>
-                <h3>Add New Book</h3>
-                <p>Add a book with cover image</p>
-              </div>
-            )}
             <div className="dashboard-card" onClick={() => navigate('/borrow')}>
               <div className="card-icon">🔄</div>
               <h3>Borrow / Return Books</h3>
@@ -47,11 +40,23 @@ const Dashboard = () => {
               <p>Reserve study seats</p>
             </div>
             {userRole === 'admin' && (
-              <div className="dashboard-card" onClick={() => navigate('/analytics')}>
-                <div className="card-icon">📊</div>
-                <h3>Analytics Dashboard</h3>
-                <p>View library statistics</p>
-              </div>
+              <>
+                <div className="dashboard-card" onClick={() => navigate('/add-book')}>
+                  <div className="card-icon">➕</div>
+                  <h3>Add New Book</h3>
+                  <p>Add a book with cover image</p>
+                </div>
+                <div className="dashboard-card" onClick={() => navigate('/return-management')}>
+                  <div className="card-icon">✅</div>
+                  <h3>Return & Fines</h3>
+                  <p>Approve returns & track fines</p>
+                </div>
+                <div className="dashboard-card" onClick={() => navigate('/analytics')}>
+                  <div className="card-icon">📊</div>
+                  <h3>Analytics Dashboard</h3>
+                  <p>View library statistics</p>
+                </div>
+              </>
             )}
           </div>
         </div>
