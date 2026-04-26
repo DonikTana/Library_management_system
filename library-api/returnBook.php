@@ -17,7 +17,7 @@ if ($actor['enrollment_id'] !== $borrowerEnrollmentId && $actorRole !== 'admin')
     sendError('You are not authorized to return this book.', 403);
 }
 
-$borrowQuery = 'SELECT id FROM borrow WHERE enrollment_id = ? AND book_id = ? AND status = "borrowed" LIMIT 1';
+$borrowQuery = 'SELECT id FROM borrow WHERE enrollment_id = ? AND book_id = ? AND status = "BORROWED" LIMIT 1';
 $stmt = $mysqli->prepare($borrowQuery);
 $stmt->bind_param('si', $borrowerEnrollmentId, $bookId);
 $stmt->execute();
@@ -30,22 +30,16 @@ if (!$borrow) {
 }
 
 $mysqli->begin_transaction();
-$updateBorrow = 'UPDATE borrow SET status = "returned", return_date = NOW() WHERE id = ?';
+$updateBorrow = 'UPDATE borrow SET status = "PENDING", return_requested_at = NOW() WHERE id = ?';
 $stmt = $mysqli->prepare($updateBorrow);
 $stmt->bind_param('i', $borrow['id']);
 $updatedBorrow = $stmt->execute();
 $stmt->close();
 
-$updateBook = 'UPDATE books SET available = 1, available_quantity = LEAST(total_quantity, available_quantity + 1) WHERE book_id = ?';
-$stmt = $mysqli->prepare($updateBook);
-$stmt->bind_param('i', $bookId);
-$updatedBook = $stmt->execute();
-$stmt->close();
-
-if ($updatedBorrow && $updatedBook) {
+if ($updatedBorrow) {
     $mysqli->commit();
-    sendSuccess();
+    sendSuccess(['message' => 'Return request submitted. Awaiting admin approval.']);
+} else {
+    $mysqli->rollback();
+    sendError('Return request failed.');
 }
-
-$mysqli->rollback();
-sendError('Return request failed.');

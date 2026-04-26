@@ -54,7 +54,7 @@ const AdminReturnManagement = () => {
         return;
       }
 
-      alert(`Return approved. Fine: ₹${data.fine}`);
+      alert(`Return approved. Fine: Rs. ${data.fine}`);
       await fetchData();
     } catch (error) {
       alert('Failed to approve return.');
@@ -98,7 +98,7 @@ const AdminReturnManagement = () => {
         return;
       }
 
-      alert(`Fine paid: ₹${data.amount}`);
+      alert(`Fine paid: Rs. ${data.amount}`);
       await fetchData();
     } catch (error) {
       alert('Failed to process payment.');
@@ -115,7 +115,7 @@ const AdminReturnManagement = () => {
       <header className="admin-return-header">
         <button onClick={() => navigate('/dashboard')} className="admin-return-back-btn">Back to Dashboard</button>
         <div>
-          <h1>📋 Return & Fine Management</h1>
+          <h1>Return & Fine Management</h1>
           <p>Manage pending returns, approve requests, and track fines.</p>
         </div>
       </header>
@@ -130,7 +130,7 @@ const AdminReturnManagement = () => {
           <p>Unpaid Fines</p>
         </div>
         <div className="stat-card">
-          <h3>₹{unpaidFines.reduce((sum, b) => sum + (b.fine || 0), 0)}</h3>
+          <h3>Rs. {unpaidFines.reduce((sum, b) => sum + (b.fine || 0), 0)}</h3>
           <p>Total Due</p>
         </div>
       </div>
@@ -160,24 +160,23 @@ const AdminReturnManagement = () => {
         <p className="admin-return-message">Loading...</p>
       ) : (
         <>
-          {/* PENDING RETURNS TAB */}
           {activeTab === 'pending' && (
             <section className="admin-return-panel">
               <h2>Pending Return Approvals</h2>
               {pendingReturns.length === 0 ? (
-                <p className="admin-return-message">✓ No pending returns to approve.</p>
+                <p className="admin-return-message">No pending returns to approve.</p>
               ) : (
                 <div className="return-records">
                   {pendingReturns.map((record) => {
                     const today = new Date().toISOString().split('T')[0];
                     const isOverdue = record.due_date && record.due_date < today;
-                    
+
                     return (
                       <article key={record.id} className="record-card">
                         <div className="record-header">
                           <h3>{record.title}</h3>
                           <span className={`status-badge ${isOverdue ? 'overdue' : 'ontime'}`}>
-                            {isOverdue ? '⚠️ OVERDUE' : '✓ On Time'}
+                            {isOverdue ? 'Overdue' : 'On Time'}
                           </span>
                         </div>
 
@@ -191,10 +190,10 @@ const AdminReturnManagement = () => {
 
                         <div className="record-actions">
                           <button onClick={() => handleApproveReturn(record.id)} className="btn btn-approve">
-                            ✓ Approve Return
+                            Approve Return
                           </button>
                           <button onClick={() => handleRejectReturn(record.id)} className="btn btn-reject">
-                            ✗ Reject Return
+                            Reject Return
                           </button>
                         </div>
                       </article>
@@ -205,12 +204,11 @@ const AdminReturnManagement = () => {
             </section>
           )}
 
-          {/* UNPAID FINES TAB */}
           {activeTab === 'fines' && (
             <section className="admin-return-panel">
               <h2>Student Unpaid Fines</h2>
               {unpaidFines.length === 0 ? (
-                <p className="admin-return-message">✓ All fines have been paid!</p>
+                <p className="admin-return-message">All fines have been paid.</p>
               ) : (
                 <div className="fines-table">
                   <table>
@@ -232,7 +230,7 @@ const AdminReturnManagement = () => {
                           <td>{record.enrollment_id}</td>
                           <td>{record.title}</td>
                           <td>{new Date(record.due_date).toLocaleDateString()}</td>
-                          <td className="fine-amount">₹{record.fine}</td>
+                          <td className="fine-amount">Rs. {record.fine}</td>
                           <td>
                             <span className="payment-badge unpaid">UNPAID</span>
                           </td>
@@ -250,7 +248,6 @@ const AdminReturnManagement = () => {
             </section>
           )}
 
-          {/* ALL RECORDS TAB */}
           {activeTab === 'all' && (
             <section className="admin-return-panel">
               <h2>All Borrow Records</h2>
@@ -273,7 +270,7 @@ const AdminReturnManagement = () => {
                         Borrowed: {new Date(record.borrowed_at).toLocaleDateString()} | Due: {new Date(record.due_date).toLocaleDateString()}
                       </p>
                       {record.fine > 0 && (
-                        <p className="mini-fine">Fine: <strong>₹{record.fine}</strong> - {record.payment_status}</p>
+                        <p className="mini-fine">Fine: <strong>Rs. {record.fine}</strong> - {record.payment_status}</p>
                       )}
                     </article>
                   );

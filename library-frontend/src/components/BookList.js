@@ -84,10 +84,18 @@ const BookList = () => {
 
   return (
     <div className="book-list">
-      <h2>Book Catalog</h2>
-      {userRole === 'admin' && (
-        <button onClick={() => navigate('/add-book')} className="add-btn">Add New Book</button>
-      )}
+      <div className="book-list-header">
+        <div>
+          <h2>Book Catalog</h2>
+          <p>Search the collection and check availability.</p>
+        </div>
+        <div className="book-list-actions">
+          <button onClick={() => navigate('/dashboard')} className="catalog-back-btn">Back to Dashboard</button>
+          {userRole === 'admin' && (
+            <button onClick={() => navigate('/add-book')} className="add-btn">Add New Book</button>
+          )}
+        </div>
+      </div>
       <div className="catalog-toolbar">
         <div className="catalog-control">
           <label htmlFor="book-search">Search Books</label>

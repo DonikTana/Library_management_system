@@ -17,8 +17,14 @@ $query = '
         books.title,
         books.author,
         b.borrow_date,
+        b.borrowed_at,
         b.return_date,
-        b.status
+        b.return_requested_at,
+        b.returned_at,
+        b.due_date,
+        b.status,
+        b.fine,
+        b.payment_status
     FROM borrow b
     INNER JOIN users ON users.enrollment_id = b.enrollment_id
     INNER JOIN books ON books.book_id = b.book_id
@@ -26,7 +32,7 @@ $query = '
 ';
 
 if (!$includeHistory) {
-    $query .= ' AND b.status = "borrowed"';
+    $query .= ' AND (b.status IN ("BORROWED", "PENDING") OR (b.status = "RETURNED" AND b.fine > 0 AND b.payment_status = "UNPAID"))';
 }
 
 if ($role !== 'admin') {

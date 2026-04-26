@@ -16,16 +16,16 @@ import '../styles/Analytics.css';
 ChartJS.register(ArcElement, BarElement, CategoryScale, Legend, LinearScale, Title, Tooltip);
 
 const piePalette = [
-  '#295db6',
-  '#2a9d8f',
-  '#e76f51',
-  '#f4a261',
-  '#8ab17d',
-  '#6d597a',
-  '#457b9d',
-  '#d62828',
-  '#7f5539',
-  '#4d908e'
+  '#0b63e6',
+  '#16a34a',
+  '#f59e0b',
+  '#dc2626',
+  '#7c3aed',
+  '#0891b2',
+  '#db2777',
+  '#65a30d',
+  '#ea580c',
+  '#475569'
 ];
 
 const Analytics = () => {
@@ -76,8 +76,19 @@ const Analytics = () => {
       {
         label: 'Borrow Count',
         data: analytics.topBorrowedBooks.map((item) => Number(item.borrow_count)),
-        backgroundColor: '#3c6ed8',
-        borderRadius: 10,
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) {
+            return '#1d74f5';
+          }
+          const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+          gradient.addColorStop(0, '#0b63e6');
+          gradient.addColorStop(0.55, '#1d74f5');
+          gradient.addColorStop(1, '#22d3ee');
+          return gradient;
+        },
+        borderRadius: 12,
         maxBarThickness: 48
       }
     ]
@@ -90,7 +101,8 @@ const Analytics = () => {
         data: analytics.categoryDistribution.map((item) => Number(item.borrow_count)),
         backgroundColor: analytics.categoryDistribution.map((_, index) => piePalette[index % piePalette.length]),
         borderColor: '#ffffff',
-        borderWidth: 2
+        borderWidth: 3,
+        hoverOffset: 12
       }
     ]
   };
@@ -102,13 +114,20 @@ const Analytics = () => {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Top 10 Borrowed Books'
+        text: 'Top 10 Borrowed Books',
+        color: '#0b1f3a',
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
       }
     },
     scales: {
       x: {
         ticks: {
-          color: '#52627a'
+          color: '#52667d',
+          maxRotation: 35,
+          minRotation: 0
         },
         grid: {
           display: false
@@ -118,7 +137,10 @@ const Analytics = () => {
         beginAtZero: true,
         ticks: {
           precision: 0,
-          color: '#52627a'
+          color: '#52667d'
+        },
+        grid: {
+          color: 'rgba(82, 102, 125, 0.14)'
         }
       }
     }
@@ -129,11 +151,21 @@ const Analytics = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'bottom'
+        position: 'bottom',
+        labels: {
+          color: '#52667d',
+          boxWidth: 14,
+          padding: 16
+        }
       },
       title: {
         display: true,
-        text: 'Borrowing Distribution By Genre'
+        text: 'Borrowing Distribution By Genre',
+        color: '#0b1f3a',
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
       }
     }
   };
@@ -156,10 +188,12 @@ const Analytics = () => {
           <>
             <section className="analytics-summary">
               <div className="analytics-card">
+                <span className="analytics-card-label">Titles</span>
                 <h3>Top Borrowed Titles</h3>
                 <p>{analytics.topBorrowedBooks.length}</p>
               </div>
               <div className="analytics-card">
+                <span className="analytics-card-label">Genres</span>
                 <h3>Genres In Borrow History</h3>
                 <p>{analytics.categoryDistribution.length}</p>
               </div>

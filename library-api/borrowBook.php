@@ -26,7 +26,7 @@ if ((int) $book['available_quantity'] <= 0) {
     sendError('This book is out of stock.');
 }
 
-$checkBorrow = 'SELECT id FROM borrow WHERE enrollment_id = ? AND book_id = ? AND status = "borrowed" LIMIT 1';
+$checkBorrow = 'SELECT id FROM borrow WHERE enrollment_id = ? AND book_id = ? AND status = "BORROWED" LIMIT 1';
 $stmt = $mysqli->prepare($checkBorrow);
 $stmt->bind_param('si', $enrollmentId, $bookId);
 $stmt->execute();
@@ -38,9 +38,10 @@ if ($existing) {
 }
 
 $mysqli->begin_transaction();
-$insertBorrow = 'INSERT INTO borrow (enrollment_id, book_id, borrow_date, status) VALUES (?, ?, NOW(), "borrowed")';
+$dueDate = date('Y-m-d', strtotime('+14 days'));
+$insertBorrow = 'INSERT INTO borrow (enrollment_id, book_id, borrow_date, borrowed_at, due_date, status) VALUES (?, ?, NOW(), NOW(), ?, "BORROWED")';
 $stmt = $mysqli->prepare($insertBorrow);
-$stmt->bind_param('si', $enrollmentId, $bookId);
+$stmt->bind_param('sis', $enrollmentId, $bookId, $dueDate);
 $inserted = $stmt->execute();
 $stmt->close();
 

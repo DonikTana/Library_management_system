@@ -115,7 +115,7 @@ const BorrowReturn = () => {
         return;
       }
 
-      alert(`Return approved. Fine: ₹${data.fine}`);
+      alert(`Return approved. Fine: Rs. ${data.fine}`);
       await fetchData();
     } catch (error) {
       alert('Failed to approve return.');
@@ -159,7 +159,7 @@ const BorrowReturn = () => {
         return;
       }
 
-      alert(`Fine paid: ₹${data.amount}`);
+      alert(`Fine paid: Rs. ${data.amount}`);
       await fetchData();
     } catch (error) {
       alert('Failed to process payment.');
@@ -269,7 +269,7 @@ const BorrowReturn = () => {
 
                       {entry.fine > 0 && (
                         <div className="fine-section">
-                          <p>Fine: <strong>₹{entry.fine}</strong></p>
+                          <p>Fine: <strong>Rs. {entry.fine}</strong></p>
                           <p>Payment Status: <span className={`payment-badge ${entry.payment_status.toLowerCase()}`}>{entry.payment_status}</span></p>
                         </div>
                       )}
@@ -307,7 +307,7 @@ const BorrowReturn = () => {
                           onClick={() => handlePayFine(entry.id)}
                           className="borrow-action-btn pay-fine-btn"
                         >
-                          Pay Fine (₹{entry.fine})
+                          Pay Fine (Rs. {entry.fine})
                         </button>
                       )}
                     </div>
